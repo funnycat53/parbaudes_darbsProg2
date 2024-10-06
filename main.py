@@ -8,7 +8,7 @@ root.title("Veikala noliktava")
 root.geometry("350x600")
 
 visi_produkti = []
-total_sold_price = 0.0  # Variable to hold the total sold price
+pardota_vertiba = 0.0  # Mainīgais, ka satur visu produktu pārdoto vērtību
 
 # Ekrāns
 frame = ttk.Frame(root)
@@ -24,11 +24,11 @@ nosaukums_label.grid(column=0, row=0, sticky='E', **options)
 veids_label = ttk.Label(frame, text='Veids')
 veids_label.grid(column=0, row=1, sticky='E', **options)
 
-# skaits label
+# Skaits label
 skaits_label = ttk.Label(frame, text='Skaits')
 skaits_label.grid(column=0, row=2, sticky='E', **options)
 
-# cena label
+# Cena label
 cena_label = ttk.Label(frame, text='Cena')
 cena_label.grid(column=0, row=3, sticky='E', **options)
 
@@ -42,172 +42,169 @@ veids = tk.StringVar()
 veids_entry = ttk.Entry(frame, textvariable=veids)
 veids_entry.grid(column=1, row=1, **options)
 
-# skaits entry
+# Skaits entry
 skaits = tk.IntVar()
 skaits_entry = ttk.Entry(frame, textvariable=skaits)
 skaits_entry.grid(column=1, row=2, **options)
 
-# cena entry
+# Cena entry
 cena = tk.DoubleVar()
 cena_entry = ttk.Entry(frame, textvariable=cena)
 cena_entry.grid(column=1, row=3, **options)
 
-# saraksta atjaunosana
+# Saraksta atjaunošana
 def nomainit_sarakstu():
     listbox.delete(0, END)
-    for produkts in visi_produkti:
-        listbox.insert("end", "{}, {}, {}, {}€".format(produkts.nosaukums, produkts.veids, produkts.skaits, produkts.cena))
+    for numurs, produkts in enumerate(visi_produkti, start=1):
+        listbox.insert("end", "{}. {}, {}, {}, {}€".format(numurs, produkts.nosaukums, produkts.veids, produkts.skaits, produkts.cena))
 
-# ražošana button
-def razot_button_clicked():
+# Produkta pievienošanas button
+def pievienot_produktu_button_clicked():
     produkta_nosaukums = nosaukums.get()
     produkta_veids = veids.get()
     produkta_skaits = skaits.get()
     produkta_cena = cena.get()
 
-    # Create a new product instance and append it to the list
     visi_produkti.append(Produkts(produkta_nosaukums, produkta_veids, produkta_skaits, produkta_cena))
     result_label.config(text=visi_produkti[-1].info())
     nomainit_sarakstu()
 
-    # Clear entries after adding
     nosaukums_entry.delete(0, END)
     veids_entry.delete(0, END)
     skaits_entry.delete(0, END)
     cena_entry.delete(0, END)
 
-razot_button = ttk.Button(frame, text='Pievienot produktu')
-razot_button.grid(column=2, row=0, sticky='W', **options)
-razot_button.configure(command=razot_button_clicked)
+# Pievienot produktu button
+pievienot_button = ttk.Button(frame, text='Pievienot produktu')
+pievienot_button.grid(column=2, row=0, sticky='W', **options)
+pievienot_button.configure(command=pievienot_produktu_button_clicked)
 
-# Listbox Title
+# Listbox nosaukums
 listbox_title = ttk.Label(frame, text='Produktu Saraksts')
 listbox_title.grid(row=4, columnspan=3, **options)
 
-# Listbox for the main product list
+# Listbox produktiem
 listbox_frame = ttk.Frame(frame)
 listbox_frame.grid(row=5, columnspan=3, **options)
 
 listbox = tk.Listbox(listbox_frame, height=6, width=50, selectmode=tk.EXTENDED)
 listbox.grid(row=0, column=0, sticky='nsew')
 
-# Scrollbar for the product list
+# Scrollbar priekš produktu saraksta listbox
 listbox_scrollbar = ttk.Scrollbar(listbox_frame, orient=tk.VERTICAL, command=listbox.yview)
 listbox_scrollbar.grid(row=0, column=1, sticky='ns')
 
 listbox.configure(yscrollcommand=listbox_scrollbar.set)
 
-# Title for the sold products and their prices
-sold_products_title = ttk.Label(frame, text='Pārdoto produktu cenas')
-sold_products_title.grid(row=6, columnspan=3, **options)
+# Nosaukums pārdoto produktu listbox
+pardotie_produkti_title = ttk.Label(frame, text='Pārdoto produktu cenas')
+pardotie_produkti_title.grid(row=6, columnspan=3, **options)
 
-# New Listbox for sold product prices
-sold_listbox_frame = ttk.Frame(frame)
-sold_listbox_frame.grid(row=7, columnspan=3, **options)
+# Pārdoto produktu listbox
+pardotie_listbox_frame = ttk.Frame(frame)
+pardotie_listbox_frame.grid(row=7, columnspan=3, **options)
 
-sold_listbox = tk.Listbox(sold_listbox_frame, height=6, width=30, selectmode=tk.SINGLE)
-sold_listbox.grid(row=0, column=0, sticky='nsew')
+pardotie_listbox = tk.Listbox(pardotie_listbox_frame, height=6, width=30, selectmode=tk.SINGLE)
+pardotie_listbox.grid(row=0, column=0, sticky='nsew')
 
-# Scrollbar for the sold product list
-sold_listbox_scrollbar = ttk.Scrollbar(sold_listbox_frame, orient=tk.VERTICAL, command=sold_listbox.yview)
-sold_listbox_scrollbar.grid(row=0, column=1, sticky='ns')
+# Scrollbar priekš pārdoto produktu listbox
+pardotie_listbox_scrollbar = ttk.Scrollbar(pardotie_listbox_frame, orient=tk.VERTICAL, command=pardotie_listbox.yview)
+pardotie_listbox_scrollbar.grid(row=0, column=1, sticky='ns')
 
-sold_listbox.configure(yscrollcommand=sold_listbox_scrollbar.set)
+pardotie_listbox.configure(yscrollcommand=pardotie_listbox_scrollbar.set)
 
-# Title for the total sold price
-total_price_title = ttk.Label(frame, text='Kopējā pārdoto produktu vērtība')
-total_price_title.grid(row=8, columnspan=3, **options)
+# Pārdoto produktu kopējās vērtības listbox nosaukums
+kopeja_vertiba_title = ttk.Label(frame, text='Kopējā pārdoto produktu vērtība')
+kopeja_vertiba_title.grid(row=8, columnspan=3, **options)
 
-# New Listbox for total sold price
-total_price_listbox = tk.Listbox(frame, height=1, width=30, selectmode=tk.SINGLE)
-total_price_listbox.grid(row=9, columnspan=3, **options)
+# Listbox priekš pārdoto produktu kopējās vērtības
+kopeja_vertiba_listbox = tk.Listbox(frame, height=1, width=30, selectmode=tk.SINGLE)
+kopeja_vertiba_listbox.grid(row=9, columnspan=3, **options)
 
-# Updated mainit_saturu function
 def mainit_saturu():
-    # Get the currently selected item index in the Listbox
-    selected_indices = listbox.curselection()
+    # Dabū sarakstā izvēlēto objektu
+    izveletie = listbox.curselection()
 
-    if selected_indices:
-        selected_index = selected_indices[0]
-        selected_product = visi_produkti[selected_index]
+    if izveletie:
+        izveletais = izveletie[0]
+        izveletais_produkts = visi_produkti[izveletais]
 
-        # Get new values from entry fields
-        jauns_nosaukums = nosaukums.get() if nosaukums.get() else selected_product.nosaukums
-        jauns_veids = veids.get() if veids.get() else selected_product.veids
+        # Dabū jaunos datus, kurus ievadīja teksta laukā
+        jauns_nosaukums = nosaukums.get() if nosaukums.get() else izveletais_produkts.nosaukums
+        jauns_veids = veids.get() if veids.get() else izveletais_produkts.veids
 
-        # Handle skaits (count) field
-        jauns_skaits = selected_product.skaits  # Default to current value
+        # Dabū jaunos datus, kurus ievadīja skaits laukā
+        jauns_skaits = izveletais_produkts.skaits  # Ja nekas nav ievadīts, paliek skaitlis, kas iepriekš bija
         if skaits_entry.get():
             try:
                 jauns_skaits = int(skaits_entry.get())
             except ValueError:
-                showinfo("Input Error", "Please enter a valid integer for the count.")
+                showinfo("Kļūda", "Lūdzu ievadiet skaitli.")
                 return
 
-        # Handle cena (price) field
-        jauna_cena = selected_product.cena  # Default to current value
+        # Dabū jaunos datus, kurus ievadija cena laukā
+        jauna_cena = izveletais_produkts.cena  # Ja nekas nav ievadīts, paliek skaitlis, kas iepriekš bija
         if cena_entry.get():
             try:
                 jauna_cena = float(cena_entry.get())
             except ValueError:
-                showinfo("Input Error", "Please enter a valid float for the price.")
+                showinfo("Kļūda", "Lūdzu ievadiet skaitli.")
                 return
 
-        # Update the selected product
-        selected_product.nosaukums = jauns_nosaukums
-        selected_product.veids = jauns_veids
-        selected_product.skaits = jauns_skaits
-        selected_product.cena = jauna_cena
+        # Atjaunina izvēlēto produktu
+        izveletais_produkts.nosaukums = jauns_nosaukums
+        izveletais_produkts.veids = jauns_veids
+        izveletais_produkts.skaits = jauns_skaits
+        izveletais_produkts.cena = jauna_cena
 
-        # Update the specific entry in the Listbox
-        listbox.delete(selected_index)
-        listbox.insert(selected_index, f"{jauns_nosaukums}, {jauns_veids}, {jauns_skaits}, {jauna_cena}€")
+        # Atjaunina attiecīgo ievades lauku
+        listbox.delete(izveletais)
+        listbox.insert(izveletais, f"{jauns_nosaukums}, {jauns_veids}, {jauns_skaits}, {jauna_cena}€")
 
-        # Clear entries after updating
+        # Attīra teksta ievades lauciņus
         nosaukums_entry.delete(0, END)
         veids_entry.delete(0, END)
         skaits_entry.delete(0, END)
         cena_entry.delete(0, END)
 
-# Edit Button
-mainit_button = ttk.Button(frame, text='Rediģēt datus')
-mainit_button.grid(column=2, row=1, sticky='W', **options)
-mainit_button.configure(command=mainit_saturu)
+# Rediģēt Button
+rediget_button = ttk.Button(frame, text='Rediģēt datus')
+rediget_button.grid(column=2, row=1, sticky='W', **options)
+rediget_button.configure(command=mainit_saturu)
 
-# Updated pardots_produkts function
 def pardots_produkts():
-    global total_sold_price  # Reference the global total price variable
+    global pardota_vertiba 
     jaunais_teksts = ""
     for izveletais in listbox.curselection():
-        product = visi_produkti[izveletais]
+        produkts = visi_produkti[izveletais]
 
-        # Check if the product count is greater than zero before selling
-        if product.skaits <= 0:
-            showinfo("Stock Error", f"{product.nosaukums} ir izpārdots!")  # Show an error message if stock is zero
-            continue  # Skip to the next selected item
+        # Pārbauda vai produkta skaits ir virs 0
+        if produkts.skaits <= 0:
+            showinfo("Kļūda", f"{produkts.nosaukums} ir izpārdots!")  # Parāda error, ja skaits ir 0 un vēl cenšas izmantot pārdot button
+            continue  
 
-        # Add the price of the sold product to the total
-        total_sold_price += product.cena
+        # Summē kopā visu produktu cenas
+        pardota_vertiba += produkts.cena
 
-        # Insert sold product info to the sold Listbox
-        sold_listbox.insert(END, f"{product.nosaukums}, {product.cena}€")
+        # Ievieto pārdotos produktus pārdoto produktu listbox
+        pardotie_listbox.insert(END, f"{produkts.nosaukums}, {produkts.cena}€")
 
-        # Update the total sold price Listbox
-        total_price_listbox.delete(0, END)  # Clear previous total
-        total_price_listbox.insert(END, f"Total Sold Price: {total_sold_price}€")
+        # Atjaunina kopēja pārdoto produktu vērtība listbox
+        kopeja_vertiba_listbox.delete(0, END)  # izdzēš iepriekšējo vērtību
+        kopeja_vertiba_listbox.insert(END, f"{pardota_vertiba}€")
 
-        product.pardotais_produkts()  # Call the method to mark the product as sold
-        jaunais_teksts += product.info() + "\n"
+        produkts.pardotais_produkts()
+        jaunais_teksts += produkts.info() + "\n"
 
     result_label.config(text=jaunais_teksts)
     nomainit_sarakstu()
 
-# Sold Product Button
+# Pārdoto produktu Button
 pardots_button = ttk.Button(frame, text='Produkts Pārdots')
 pardots_button.grid(column=2, row=2, sticky='W', **options)
 pardots_button.configure(command=pardots_produkts)
 
-# Result Label
+# Rezultātu Label
 result_label = ttk.Label(frame, text='')
 result_label.grid(columnspan=3, **options)
 
