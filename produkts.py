@@ -1,39 +1,35 @@
 class Produkts():
-    def __init__(self, name, type, count):
+    def __init__(self, name, type, count, price):
         self.nosaukums = name
         self.skaits = count
         self.veids = type
-
-    def paaugstinas_skaits(self):
-        self.skaits += 1
-        self.info()
-
-    def samazinas_skaits(self):
-        self.skaits -= 1
-        self.info()
+        self.cena = price
 
     def jaunsNosaukums(self, jaunais_nosaukums):
         self.nosaukums = jaunais_nosaukums
-        self.info()
+
+    def pardotais_produkts(self):
+        self.skaits = int(self.skaits)
+        self.skaits -= 1
 
     def mainit_tipu(self, jaunais_veids = ""):
         if jaunais_veids == "":
-            if self.veids == "Det":
-                self.veids = "Prog"
+            if self.veids == "D":
+                self.veids = "P"
             else:
-                self.veids = "Prod"
+                self.veids = "P"
         else:
             self.veids = jaunais_veids
         self.info()
 
     def info(self):
-        if self.veids == "Prog":
+        if self.veids == "P":
                 veids = "Programmatūra"
-        elif self.veids == "Det":
+        elif self.veids == "D":
             veids = "Detaļa"
         else:
             veids = self.veids
-        return "Produkta nosaukums: {}.  \n Produkta veids:{} \n Produktu kopējais skaits: {}.".format(self.nosaukums, veids, self.skaits)
+        return "Produkta nosaukums: {}\n Produkta veids: {}\n Produktu kopējais skaits: {}\n Produkta cena: {}€".format(self.nosaukums, veids, self.skaits, self.cena)
 
 
 
