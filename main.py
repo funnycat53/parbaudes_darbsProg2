@@ -69,6 +69,7 @@ def pievienot_produktu_button_clicked():
     result_label.config(text=visi_produkti[-1].info())
     nomainit_sarakstu()
 
+    # Attīra teksta ievades lauciņus
     nosaukums_entry.delete(0, END)
     veids_entry.delete(0, END)
     skaits_entry.delete(0, END)
